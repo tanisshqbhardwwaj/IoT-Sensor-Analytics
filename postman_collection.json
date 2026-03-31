@@ -1,0 +1,196 @@
+{
+  "info": {
+    "_postman_id": "iot-sensor-analytics-collection",
+    "name": "IoT Sensor Analytics API",
+    "description": "Complete API documentation for the IoT Sensor Analytics platform built on TimescaleDB.\n\nBase URL: http://localhost:5000",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:5000", "type": "string" },
+    { "key": "device_id", "value": "sensor-001", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /api/health",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/health",
+            "description": "Returns API health status, PostgreSQL version, and server uptime."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Devices",
+      "item": [
+        {
+          "name": "GET /api/devices",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/devices",
+            "description": "Returns all registered devices with their latest sensor reading."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/devices",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/devices",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"device_id\": \"sensor-006\",\n  \"device_name\": \"Lab Sensor A\",\n  \"location\": \"Lab Room 3\",\n  \"device_type\": \"temperature_humidity\",\n  \"firmware_version\": \"1.2.0\"\n}"
+            },
+            "description": "Register a new IoT device. If the device_id already exists, it performs an upsert."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Sensor Data",
+      "item": [
+        {
+          "name": "POST /api/sensors/:device_id/data",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/sensors/{{device_id}}/data",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"temperature\": 23.5,\n  \"humidity\": 65.2,\n  \"pressure\": 1013.25,\n  \"signal_strength\": -72\n}"
+            },
+            "description": "Ingest a sensor reading. At least one of temperature, humidity, pressure, or signal_strength is required.\n\nOptionally include a `time` field (ISO 8601) to backfill historical data."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/sensors/:device_id/data",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/sensors/{{device_id}}/data?start=2024-01-01T00:00:00Z&end=2024-01-02T00:00:00Z&limit=500",
+              "host": ["{{base_url}}"],
+              "path": ["api", "sensors", "{{device_id}}", "data"],
+              "query": [
+                { "key": "start", "value": "2024-01-01T00:00:00Z", "description": "ISO 8601 start time (default: 24h ago)" },
+                { "key": "end",   "value": "2024-01-02T00:00:00Z", "description": "ISO 8601 end time (default: now)" },
+                { "key": "limit", "value": "500",                   "description": "Max rows to return (max: 5000, default: 500)" }
+              ]
+            },
+            "description": "Get raw time-series data for a device. Returns rows ordered by time DESC."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/sensors/:device_id/aggregate",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/sensors/{{device_id}}/aggregate?interval=hourly&start=2024-01-01T00:00:00Z&end=2024-01-08T00:00:00Z",
+              "host": ["{{base_url}}"],
+              "path": ["api", "sensors", "{{device_id}}", "aggregate"],
+              "query": [
+                { "key": "interval", "value": "hourly", "description": "Aggregation interval: hourly | daily | weekly" },
+                { "key": "start",    "value": "2024-01-01T00:00:00Z" },
+                { "key": "end",      "value": "2024-01-08T00:00:00Z" }
+              ]
+            },
+            "description": "Get pre-aggregated data from TimescaleDB continuous aggregates (hourly_stats, daily_stats, or weekly_stats)."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/sensors/:device_id/stats",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/sensors/{{device_id}}/stats?start=2024-01-01T00:00:00Z&end=2024-01-02T00:00:00Z",
+              "host": ["{{base_url}}"],
+              "path": ["api", "sensors", "{{device_id}}", "stats"],
+              "query": [
+                { "key": "start", "value": "2024-01-01T00:00:00Z" },
+                { "key": "end",   "value": "2024-01-02T00:00:00Z" }
+              ]
+            },
+            "description": "Get summary statistics (avg, min, max, stddev) for a device within a time range."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/sensors/:device_id/export (CSV)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/sensors/{{device_id}}/export?start=2024-01-01T00:00:00Z&end=2024-01-02T00:00:00Z",
+              "host": ["{{base_url}}"],
+              "path": ["api", "sensors", "{{device_id}}", "export"],
+              "query": [
+                { "key": "start", "value": "2024-01-01T00:00:00Z" },
+                { "key": "end",   "value": "2024-01-02T00:00:00Z" }
+              ]
+            },
+            "description": "Download sensor data as a CSV file. Returns Content-Disposition: attachment header."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Alerts",
+      "item": [
+        {
+          "name": "GET /api/alerts",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/alerts?resolved=false&limit=50",
+              "host": ["{{base_url}}"],
+              "path": ["api", "alerts"],
+              "query": [
+                { "key": "device_id", "value": "",      "description": "Filter by device (optional)" },
+                { "key": "resolved",  "value": "false", "description": "Filter by resolved status: true | false" },
+                { "key": "limit",     "value": "50",    "description": "Max rows to return (max: 500)" }
+              ]
+            },
+            "description": "List alerts, with optional filtering by device and resolution status."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/alerts",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/alerts",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"device_id\": \"sensor-001\",\n  \"alert_type\": \"high_temperature\",\n  \"severity\": \"critical\",\n  \"message\": \"Temperature exceeded 50°C threshold\",\n  \"metric_value\": 52.3,\n  \"threshold_value\": 50\n}"
+            },
+            "description": "Manually create an alert. Alerts are also automatically created by the server when sensor readings exceed configured thresholds."
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /api/alerts/:alert_id/resolve",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/alerts/YOUR_ALERT_UUID_HERE/resolve",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resolved_by\": \"admin\"\n}"
+            },
+            "description": "Mark an alert as resolved. Replace the UUID in the URL with an actual alert_id."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

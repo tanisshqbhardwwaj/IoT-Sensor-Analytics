@@ -1,0 +1,241 @@
+/* =========================================================
+   Global Styles – IoT Sensor Analytics Dashboard
+   ========================================================= */
+:root {
+  --bg-primary:    #0f0f1a;
+  --bg-secondary:  #1a1a2e;
+  --bg-card:       #16213e;
+  --accent:        #0f3460;
+  --highlight:     #e94560;
+  --text-primary:  #e0e0e0;
+  --text-secondary:#a0a0b0;
+  --success:       #27ae60;
+  --warning:       #f39c12;
+  --danger:        #e74c3c;
+  --border:        #2a2a4a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* App shell */
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+
+/* Top navigation */
+.navbar {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.navbar-brand {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--highlight);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.navbar-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+}
+.status-dot.offline { background: var(--danger); }
+
+/* Tab navigation */
+.tab-nav {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 4px;
+  padding: 0 24px;
+}
+.tab-nav button {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  padding: 14px 18px;
+  cursor: pointer;
+  font-size: 14px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+.tab-nav button:hover { color: var(--text-primary); }
+.tab-nav button.active {
+  color: var(--highlight);
+  border-bottom-color: var(--highlight);
+}
+
+/* Main content area */
+.main-content {
+  flex: 1;
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Cards */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Metric tiles */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.metric-tile {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+}
+.metric-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--highlight);
+}
+.metric-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* Charts */
+.chart-container { position: relative; height: 260px; }
+
+/* Alerts */
+.alert-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.alert-item:last-child { border-bottom: none; }
+.alert-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+.badge-critical { background: var(--danger);  color: #fff; }
+.badge-warning  { background: var(--warning); color: #000; }
+.badge-info     { background: var(--accent);  color: #fff; }
+.alert-details  { flex: 1; }
+.alert-message  { font-size: 13px; }
+.alert-meta     { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+.btn:hover { opacity: 0.85; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary   { background: var(--highlight); color: #fff; }
+.btn-secondary { background: var(--accent);    color: #fff; }
+.btn-success   { background: var(--success);   color: #fff; }
+.btn-sm        { padding: 4px 10px; font-size: 12px; }
+
+/* Form elements */
+.form-group  { margin-bottom: 16px; }
+.form-label  { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; }
+.form-input, .form-select {
+  width: 100%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  padding: 8px 12px;
+  font-size: 14px;
+}
+.form-input:focus, .form-select:focus {
+  outline: none;
+  border-color: var(--highlight);
+}
+
+/* Devices table */
+.devices-table { width: 100%; border-collapse: collapse; }
+.devices-table th {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.devices-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.devices-table tr:last-child td { border-bottom: none; }
+.devices-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* Status badge */
+.badge-active   { color: var(--success); }
+.badge-inactive { color: var(--text-secondary); }
+
+/* Loading / empty states */
+.loading-text { color: var(--text-secondary); text-align: center; padding: 40px; }
+
+/* Two-column layout */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+
+/* Performance table */
+.perf-table { width: 100%; border-collapse: collapse; }
+.perf-table th, .perf-table td {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  text-align: left;
+  font-size: 13px;
+}
+.perf-table th { background: var(--accent); color: #fff; }
+.perf-improvement { color: var(--success); font-weight: 700; }
